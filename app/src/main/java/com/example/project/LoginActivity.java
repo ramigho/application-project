@@ -76,7 +76,7 @@ public class LoginActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (!task.isSuccessful()) {
-                                    Toast.makeText(LoginActivity.this, "Login error, please login again.", Toast.LENGTH_SHORT);
+                                    Toast.makeText(LoginActivity.this, "Login error, please login again.", Toast.LENGTH_SHORT).show();
                                 } else {
                                     System.out.println("ONNISTUI!!!");
                                     Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
@@ -85,7 +85,7 @@ public class LoginActivity extends AppCompatActivity {
                             }
                         });
                     } else {
-                        Toast.makeText(LoginActivity.this, "Jossain tuli virhe:(", Toast.LENGTH_SHORT);
+                        Toast.makeText(LoginActivity.this, "Jossain tuli virhe:(", Toast.LENGTH_SHORT).show();
                     }
 
                 } else if (v == findViewById(R.id.homebutton3)){
@@ -97,7 +97,6 @@ public class LoginActivity extends AppCompatActivity {
 
         login.setOnClickListener(listener);
         home.setOnClickListener(listener);
-
 
         signUp.setOnClickListener(new View.OnClickListener() {
             @Override

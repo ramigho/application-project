@@ -81,7 +81,6 @@ public class EditReservationActivity extends AppCompatActivity {
                     startActivity(new Intent(EditReservationActivity.this, MainActivity.class));
 
                 } else if (v == findViewById(R.id.deleteRes)){
-                    System.out.println("POISTA");
                     ReadAndWriteXML.deleteRes(context, positionvalue);
                     System.out.println("POISTETTU");
                     finish();

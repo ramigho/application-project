@@ -24,47 +24,23 @@ public class UserProfile {
         return userName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
     public String getUserSecond() {
         return userSecond;
-    }
-
-    public void setUserSecond(String userSecond) {
-        this.userSecond = userSecond;
     }
 
     public String getUserPhone() {
         return userPhone;
     }
 
-    public void setUserPhone(String userPhone) {
-        this.userPhone = userPhone;
-    }
-
     public String getUserAdress() {
         return userAdress;
-    }
-
-    public void setUserAdress(String userAdress) {
-        this.userAdress = userAdress;
     }
 
     public String getUserTown() {
         return userTown;
     }
 
-    public void setUserTown(String userTown) {
-        this.userTown = userTown;
-    }
-
     public String getUserPost() {
         return userPost;
-    }
-
-    public void setUserPost(String userPost) {
-        this.userPost = userPost;
     }
 }
