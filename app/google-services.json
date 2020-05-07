@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "544431002396",
+    "firebase_url": "https://monitoimihalli-36b84.firebaseio.com",
+    "project_id": "monitoimihalli-36b84",
+    "storage_bucket": "monitoimihalli-36b84.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:544431002396:android:d2e8c9b905c5cfb38fe0d9",
+        "android_client_info": {
+          "package_name": "com.example.week10"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "544431002396-p1ajrg8ueg1rbns6thdib5hjoasi0r2l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBII8Prm6RBeIfdnAHk1jjc_HR0VMcHwa0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "544431002396-p1ajrg8ueg1rbns6thdib5hjoasi0r2l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="4dp">
+
+    <RelativeLayout
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="4dp"
+        android:padding="4dp"
+        android:background="@android:color/holo_green_light"
+        android:scrollbars="vertical">
+
+
+        <TextView
+            android:id="@+id/clock"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
+            android:padding="2dp"
+            android:layout_alignParentTop="true"
+            android:text="10:00"
+            android:textSize="20sp"
+            android:textColor="@android:color/black"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp" />
+
+
+        <TextView
+            android:id="@+id/header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:text="Line 1"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_toEndOf="@+id/clock"
+            android:layout_toRightOf="@+id/clock" />
+
+        <TextView
+            android:id="@+id/subheader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/clock"
+            android:layout_below="@+id/header"
+            android:text="Line 2"
+            android:textSize="15sp"
+            android:layout_toRightOf="@+id/clock"
+            android:layout_marginStart="2dp"
+            android:layout_marginLeft="2dp" />
+
+        <Button
+            android:id="@+id/reserve"
+            android:layout_width="130dp"
+            android:layout_height="50dp"
+            android:layout_alignStart="@+id/clock"
+            android:layout_alignLeft="@+id/clock"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginStart="241dp"
+            android:layout_marginLeft="241dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:text="VARAA" />
+
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>
