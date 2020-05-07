@@ -27,6 +27,12 @@ import java.util.Calendar;
 import java.util.Date;
 
 
+// TODO DONE 1. varattuja varauksia ei voi varata
+// TODO 2. omia varauksia voi muokata
+// TODO  DONE 3. omat varaukset ovat OMIA, muut eivät voi muokata niitä DONE
+// TODO 4. kun spineristä valittu sali, päivitä
+// TODO 5. katso muut TODO:t
+
 public class MainActivity extends AppCompatActivity {
 
     Context context;
@@ -34,18 +40,22 @@ public class MainActivity extends AppCompatActivity {
     Button sign;
     Button profile;
     Button calendarButton;
+    Button refresh;
     Spinner hallSpinner;
     TextView calendar;
     DatePickerDialog.OnDateSetListener mDateSetListener;
     RecyclerView mRecyclerView;
     RecyclerView.Adapter mAdapter;
     RecyclerView.LayoutManager mLayoutManager;
-    TextView date;
     ArrayList<String> hallArray = new ArrayList<String>();
     ArrayList<UserReservation> userReservationsArray;
     ArrayAdapter<String> hallAA;
+
     int spinner_value;
     String hall;
+    int cYear;
+    int cMonth;
+    int cDay;
 
 
     @Override
@@ -53,13 +63,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        refresh = (Button) findViewById(R.id.refresh);
         log = (Button) findViewById(R.id.log);
         sign = (Button) findViewById(R.id.sign);
         profile = (Button) findViewById(R.id.profile);
         hallSpinner = (Spinner) findViewById(R.id.hallSpinner);
         calendar = (TextView) findViewById(R.id.calendar);
         calendarButton = (Button) findViewById(R.id.calendarButton);
-        date = (TextView) findViewById(R.id.date);
         this.context = getApplicationContext();
 
 
@@ -83,7 +93,6 @@ public class MainActivity extends AppCompatActivity {
         hallArray.add("Peilisali");
         hallArray.add("Tenniskenttä");
         hallArray.add("Kuntosali");
-
         hallAA = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, hallArray);
         hallAA.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         hallSpinner.setAdapter(hallAA);
@@ -92,7 +101,6 @@ public class MainActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 spinner_value = position;
                 hall = parent.getItemAtPosition(position).toString();
-
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -100,15 +108,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         /* Show today's reservations */
-        Date dateToday = new Date();
-        Calendar today = Calendar.getInstance();
-        today.setTime(dateToday);
-        int year = today.get(Calendar.YEAR);
-        int month = today.get(Calendar.MONTH);
-        int day = today.get(Calendar.DAY_OF_MONTH);
-        month++;
-        calendar.setText(day+"."+month+"."+year);
-        setRecycler(day, month, year);
+        cDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+        cMonth = Calendar.getInstance().get(Calendar.MONTH) + 1;
+        cYear = Calendar.getInstance().get(Calendar.YEAR);
+        calendar.setText(cDay + "."+ cMonth +"."+ cYear);
 
 
         /* LOG-IN, LOG-OUT button and activities behind click */
@@ -151,13 +154,19 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) { //TODO ei toimi ekalla klikillä, miksi??
                             month++;
+                            cYear = year;
+                            cMonth = month;
+                            cDay = dayOfMonth;
+
                             String date = dayOfMonth + "." + month + "." + year;
                             calendar.setText(date);
-                            setRecycler(dayOfMonth, month, year);
                         }
                     };
                 } else if (v == findViewById(R.id.profile)){
                     startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                } else if (v == findViewById(R.id.refresh)){
+                    setRecycler(cDay, cMonth, cYear, hall);
+                    calendar.setText(cDay + "."+ cMonth +"."+ cYear);
                 }
             }
         };
@@ -167,10 +176,11 @@ public class MainActivity extends AppCompatActivity {
         sign.setOnClickListener(listener);
         calendarButton.setOnClickListener(listener);
         profile.setOnClickListener(listener);
+        refresh.setOnClickListener(listener);
     }
 
     /* Recycler view stuff */
-    public void setRecycler(int dayOfMonth, int month, int year)  {
+    public void setRecycler(int dayOfMonth, int month, int year, String hall)  {
 
         try {
             String dateString = dayOfMonth + "." + month + "." + year;
@@ -186,39 +196,42 @@ public class MainActivity extends AppCompatActivity {
         }
 
         String dateStr = dayOfMonth+"."+month+"."+year;
-        date.setText(dateStr);
-        // TODO Hae xml-tiedostosta varatut ajat.
-
-        userReservationsArray = new ArrayList<>();
-        userReservationsArray = ReadAndWriteXML.readXML(context);
         ArrayList<Reservation> reservationList = new ArrayList<>();
+        userReservationsArray = new ArrayList<>();
+        userReservationsArray = ReadAndWriteXML.readSpesificXML(context, hall);
 
-        for (int u = 0; u<userReservationsArray.size(); u++){
-            if (userReservationsArray.get(u).getHall().equals(hallArray.get(spinner_value))){
-                for (int j = 0; j<10; j++){
-                    reservationList.add(new Reservation("Vapaa vuoro", hallArray.get(spinner_value),j, dateStr));
-                }
+        if (userReservationsArray.size() != 0) {
+            for (int u = 0; u < userReservationsArray.size(); u++) {
+                if (userReservationsArray.get(u).getHall().equals(hallArray.get(spinner_value))) {
+                    for (int j = 0; j < 10; j++) {
+                        reservationList.add(new Reservation("Vapaa vuoro", hallArray.get(spinner_value), j, dateStr));
+                    }
 
-                for (int i = 0; i<userReservationsArray.size(); i++){
-                    if (userReservationsArray.get(i).getDate().equals(dateStr)){
-                        int timeid = getTimeId(userReservationsArray.get(i).getTime());
-                        reservationList.set(timeid, new Reservation("VARATTU", hallArray.get(spinner_value),timeid, dateStr));
-                        System.out.println("Hep!");
+                    for (int i = 0; i < userReservationsArray.size(); i++) {
+                        if (userReservationsArray.get(i).getDate().equals(dateStr)) {
+                            int timeid = getTimeId(userReservationsArray.get(i).getTime());
+                            reservationList.set(timeid, new Reservation("VARATTU", hallArray.get(spinner_value), timeid, dateStr));
+                            System.out.println("Hep!");
+                        }
+                    }
+                } else {
+                    for (int j = 0; j < 10; j++) {
+                        reservationList.add(new Reservation("Vapaa vuoro", hallArray.get(spinner_value), j, dateStr));
                     }
                 }
-            } else {
-                for (int j = 0; j < 10; j++) {
-                    reservationList.add(new Reservation("Vapaa vuoro", hallArray.get(spinner_value), j, dateStr));
-                }
+            }
+        } else {
+            for (int j = 0; j < 10; j++) {
+                reservationList.add(new Reservation("Vapaa vuoro", hallArray.get(spinner_value), j, dateStr));
             }
         }
 
 
-        System.out.println("Hep!");
 
         mRecyclerView = findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
+
         mAdapter = new ReserveAdapter(reservationList, context);
 
         mRecyclerView.setLayoutManager(mLayoutManager);

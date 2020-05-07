@@ -19,57 +19,54 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.w3c.dom.Text;
+public class EditReservationActivity extends AppCompatActivity {
 
-import java.io.Serializable;
-import java.util.ArrayList;
-
-public class ReserveActivity extends AppCompatActivity implements Serializable {
-
-    Context context;
-    Button homebutton7, submitReservation;
-    TextView resHall, resDatetime, resName, resSecond, goBack;
+    TextView tv1, tv2, tv3, tv4, returnBack;
+    EditText editInfo;
+    Button editReservation, deleteRes, homebutton9;
     EditText resInfo;
     FirebaseAuth firebaseAuth;
     FirebaseDatabase firebaseDatabase;
-
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_reserve);
+        setContentView(R.layout.activity_edit_reservation);
 
         this.context = getApplicationContext();
-        homebutton7 = (Button) findViewById(R.id.homebutton7);
-        submitReservation = (Button) findViewById(R.id.submitReservation);
-        resHall = (TextView) findViewById(R.id.resHall);
-        resDatetime = (TextView) findViewById(R.id.resDatetime);
-        resName = (TextView) findViewById(R.id.resName);
-        resSecond = (TextView) findViewById(R.id.resSecond);
-        goBack = (TextView) findViewById(R.id.goBack);
-        resInfo = (EditText) findViewById(R.id.resInfo);
+        tv1 = (TextView) findViewById(R.id.tv1);
+        tv2 = (TextView) findViewById(R.id.tv2);
+        tv3 = (TextView) findViewById(R.id.tv3);
+        tv4 = (TextView) findViewById(R.id.tv4);
+        returnBack = (TextView) findViewById(R.id.returnBack);
+        editInfo = (EditText) findViewById(R.id.editInfo);
+        editReservation = (Button) findViewById(R.id.editReservation);
+        deleteRes = (Button) findViewById(R.id.deleteRes);
+        homebutton9 = (Button) findViewById(R.id.homebutton9);
 
         Intent intent = getIntent();
         final String time = intent.getExtras().getString("time");
         final String date = intent.getExtras().getString("date");
         final String hall = intent.getExtras().getString("hall");
+        final int positionvalue = intent.getExtras().getInt("position");
 
-
-        /* Get values from user and reservation itself. */
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseDatabase = FirebaseDatabase.getInstance();
         final DatabaseReference databaseReference = firebaseDatabase.getReference(firebaseAuth.getUid());
+
 
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 System.out.println("NYT OLLAAN RESERVE ACTIVITYSSÄ:DD");
                 UserProfile userProfile = dataSnapshot.getValue(UserProfile.class);
-                resHall.setText(hall);
-                resDatetime.setText(date + "  " +time);
-                resName.setText(userProfile.getUserName());
-                resSecond.setText(userProfile.getUserSecond());
+                tv1.setText(hall);
+                tv2.setText(date + "  " +time);
+                tv3.setText(userProfile.getUserName());
+                tv4.setText(userProfile.getUserSecond());
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 System.out.println("Databasesta luku epäonnistui.");
@@ -79,30 +76,29 @@ public class ReserveActivity extends AppCompatActivity implements Serializable {
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (v == findViewById(R.id.homebutton7)){
+                if (v == findViewById(R.id.homebutton9)){
                     finish();
-                    startActivity(new Intent(ReserveActivity.this, MainActivity.class));
+                    startActivity(new Intent(EditReservationActivity.this, MainActivity.class));
 
-                } else if (v == findViewById(R.id.submitReservation)){
+                } else if (v == findViewById(R.id.deleteRes)){
+                    System.out.println("POISTA");
+                    ReadAndWriteXML.deleteRes(context, positionvalue);
+                    System.out.println("POISTETTU");
+                    finish();
+                    startActivity(new Intent(EditReservationActivity.this, UserReservationActivity.class));
+
+                } else if (v == findViewById(R.id.editReservation)){
                     String info = resInfo.getText().toString();
-                    Intent reserveIntent = new Intent(context, UserReservationActivity.class);
+                    ReadAndWriteXML.deleteRes(context, positionvalue);
                     UserReservation userReservation = new UserReservation(firebaseAuth.getUid(), hall, date, time, info);
-
-                    // TODO Tiedostoon kirjoitus täällä!
                     ReadAndWriteXML.writeXML(context, userReservation);
-
                     finish();
-                    startActivity(reserveIntent);
-
-                } else if (v == findViewById(R.id.goBack)){
-                    finish();
-                    startActivity(new Intent(ReserveActivity.this, MainActivity.class));
+                    startActivity(new Intent(EditReservationActivity.this, UserReservationActivity.class));
                 }
             }
         };
-
-        homebutton7.setOnClickListener(listener);
-        submitReservation.setOnClickListener(listener);
-        goBack.setOnClickListener(listener);
+        homebutton9.setOnClickListener(listener);
+        deleteRes.setOnClickListener(listener);
+        editReservation.setOnClickListener(listener);
     }
 }

@@ -13,19 +13,18 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.week10.R;
 import com.google.firebase.auth.FirebaseAuth;
-
 import java.util.ArrayList;
 
 
 
 public class ReserveAdapter extends RecyclerView.Adapter<ReserveAdapter.ReservationViewHolder> {
-    private ArrayList<Reservation> reservationList;
+    ArrayList<Reservation> reservationList;
     Context context;
+    int reservation_position;
 
     public static class ReservationViewHolder extends RecyclerView.ViewHolder{
         TextView header;
@@ -59,10 +58,14 @@ public class ReserveAdapter extends RecyclerView.Adapter<ReserveAdapter.Reservat
 
     @Override
     public void onBindViewHolder(@NonNull ReservationViewHolder holder, int position) {
+        reservation_position = position;
         Reservation currentReservation = reservationList.get(position);
 
 
         if (reservationList.get(position).getStatus().equals("VARATTU")){
+
+            // TODO jos kirjautuneen käyttäjän oma varaus, tulee nappi "Muokkaa varausta" => sen jälkeen kun muokkaaminen on tehty :D
+            holder.reserve.setVisibility(View.GONE);
             holder.relativeLayout.setBackgroundColor(Color.RED);
             holder.header.setBackgroundColor(Color.RED);
             holder.header.setText(currentReservation.getStatus());
